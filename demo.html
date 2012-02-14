@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Mutabor demo page</title>
+
+    <style>
+        html, body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .demo-element {
+            width: 400px;
+        }
+        .row {
+            margin-bottom: 6px;
+        }
+        .row label {
+            display: inline-block;
+        }
+        .row input[type=text], .row textarea {
+            display: block;
+            width: 100%;
+        }
+    </style>
+
+    <script src="mutabor.js"></script>
+
+    <script src="http://yandex.st/jquery/1.7.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $('#add-element').click(function () {
+                var tag = '<' + $('#element-tag').val() + '/>'
+                var props = eval('(function(){return{' + $('#element-props').val() + '};})()')
+
+                $(tag, props).appendTo('#demo-element-container')
+
+                return false
+            })
+
+            $('#clear-elements').click(function () {
+                $('#demo-element-container').empty()
+
+                return false
+            })
+        })
+    </script>
+</head>
+<body>
+    <div class="demo-element">
+        <div class="row">
+            <label for="element-tag">Element tag</label>
+            <input id="element-tag" name="element-tag" />
+        </div>
+
+        <div class="row">
+            <label for="element-props">Element properties</label>
+            <textarea id="element-props" name="element-props" rows="10" cols="40"></textarea>
+        </div>
+
+        <div class="row">
+            <input id="add-element" type="submit" value="Add element" />
+            <input id="clear-elements" type="button" value="Clear elements" />
+        </div>
+    </div>
+
+    <div id="demo-element-container"></div>
+</body>
+</html>
