@@ -1,7 +1,7 @@
 window.mutabor = (function () {
     var _interceptors = [],
         _registerInterceptor = function (type, handler) {
-            window.document.addEventListener(type, handler)
+            document.addEventListener(type, handler)
             _interceptors.push({
                 'type': type,
                 'handler': handler
@@ -73,7 +73,7 @@ window.mutabor = (function () {
 
         reset: function () {
             _interceptors.forEach(function (f) {
-                window.document.removeEventListener(f.type, f.handler)
+                document.removeEventListener(f.type, f.handler)
             })
             _interceptors = []
         }
