@@ -66,11 +66,11 @@ window.mutabor = (function () {
         },
 
         attribute: function (selector, interceptor) {
-            throw 'DOMCharacterDataModified is not supported in WebKit so this interceptor is not implemented'
+            throw 'DOMAttrModified is not supported in WebKit so this interceptor is not implemented'
         },
 
         text: function (selector, interceptor) {
-            throw 'DOMAttrModified is not supported in WebKit so this interceptor is not implemented'
+            throw 'DOMCharacterDataModifiedis not supported in WebKit so this interceptor is not implemented'
         },
 
         on: function (type) {
@@ -83,6 +83,10 @@ window.mutabor = (function () {
                 document.removeEventListener(f.type, f.handler)
             })
             _interceptors = []
+        },
+
+        toString: function () {
+            return 'mutabor version 0.1'
         }
     };
 })()
