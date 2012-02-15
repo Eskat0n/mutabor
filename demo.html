@@ -9,6 +9,8 @@
             font-size: 14px;
         }
 
+        body { position: relative; }
+
         .demo-element {
             width: 400px;
         }
@@ -21,6 +23,12 @@
         .row input[type=text], .row textarea {
             display: block;
             width: 100%;
+        }
+
+        .mutabor-filter {
+            position: absolute;
+            left: 430px;
+            top: 32px;
         }
     </style>
 
@@ -43,6 +51,14 @@
 
                 return false
             })
+
+            $('#apply-filter').click(function () {
+                mutabor.reset()
+
+                eval('(function () {' + $('#filter-script').val() + '})()')
+
+                return false;
+            })
         })
     </script>
 </head>
@@ -61,6 +77,17 @@
         <div class="row">
             <input id="add-element" type="submit" value="Add element" />
             <input id="clear-elements" type="button" value="Clear elements" />
+        </div>
+    </div>
+
+    <div class="mutabor-filter">
+        <div class="row">
+            <label for="filter-script">Mutabor filter script</label>
+            <textarea id="filter-script" name="filter-script" rows="10" cols="70"></textarea>
+        </div>
+
+        <div class="row">
+            <input id="apply-filter" type="button" value="Apply filter" />
         </div>
     </div>
 
