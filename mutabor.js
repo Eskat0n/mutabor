@@ -1,42 +1,70 @@
 HTMLElement.prototype.is = function (selector) {
-    var clone = this.cloneNode(true);
+    var clone = this.cloneNode(true)
 
-    var outerWrapper = document.createElement('div');
-    var innerWrapper = document.createElement('div');
+    var outerWrapper = document.createElement('div')
+    var innerWrapper = document.createElement('div')
 
-    innerWrapper.id = 'temp' + new Date().getTime() + Math.round(Math.random() * 1000);
+    innerWrapper.id = 'temp' + new Date().getTime() + Math.round(Math.random() * 1000)
 
-    outerWrapper.appendChild(innerWrapper);
-    innerWrapper.appendChild(clone);
+    outerWrapper.appendChild(innerWrapper)
+    innerWrapper.appendChild(clone)
 
-    return !!outerWrapper.querySelector('#' + innerWrapper.id + ' > ' + selector);
-};
+    return !!outerWrapper.querySelector('#' + innerWrapper.id + ' > ' + selector)
+}
 
 window.mutabor = window.mutabor || (function () {
     var mutabor = {
-        insertFilter: function () {
+        _filters: [],
+
+        insert: function (selector, callback) {
+            if (!callback) {
+                callback = selector
+                selector = null
+            }
+
+            var eventHandler = function (event) {
+                var target = event.srcElement || event.target
+                var container = event.relatedNode
+
+                if (selector && target.is(selector))
+                    if (callback(target, event) === false)
+                        if (container)
+                            container.removeChild(target)
+            }
+
+            window.document.addEventListener('DOMNodeInserted', eventHandler)
+            this._filters.push({
+                type: 'DOMNodeInserted',
+                handler: eventHandler
+            })
+        },
+
+        remove: function (selector, callback) {
 
         },
 
-        removeFilter: function () {
+        attribute: function (selector, callback) {
 
         },
 
-        attrFilter: function () {
+        text: function (selector, callback) {
 
         },
 
-        textFilter: function () {
-
+        on: function (type) {
+            var params = Array.prototype.slice.call(arguments, 1)
+            window.mutabor[type + 'Filter'].apply(this, params)
         },
 
-        filter: function (type) {
-            var params = Array.prototype.slice.call(arguments, 1);
-            window.mutabor[type + 'Filter'].apply(this, params);
+        reset: function () {
+            this._filters.forEach(function (f) {
+                window.document.removeEventListener(f.type, f.handler)
+            })
+            this._filters = []
         }
-    };
+    }
 
-    return mutabor;
-})();
+    return mutabor
+})()
 
 
