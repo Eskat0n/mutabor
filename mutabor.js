@@ -66,18 +66,11 @@ window.mutabor = (function () {
         },
 
         attribute: function (selector, interceptor) {
-            if (!interceptor) {
-                interceptor = selector
-                selector = null
-            }
-
-            _registerInterceptor('DOMAttrModified', selector, function (target, event) {
-                interceptor(target, event)
-            })
+            throw 'DOMCharacterDataModified is not supported in WebKit so this interceptor is not implemented'
         },
 
         text: function (selector, interceptor) {
-
+            throw 'DOMAttrModified is not supported in WebKit so this interceptor is not implemented'
         },
 
         on: function (type) {
