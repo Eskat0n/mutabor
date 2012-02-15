@@ -14,7 +14,15 @@ HTMLElement.prototype.is = function (selector) {
 
 window.mutabor = window.mutabor || (function () {
     var mutabor = {
-        _filters: [],
+        _interceptors: [],
+
+        _registerInterceptor: function (type, handler) {
+            window.document.addEventListener(type, handler)
+            this._interceptors.push({
+                'type': type,
+                'handler': handler
+            })
+        },
 
         insert: function (selector, callback) {
             if (!callback) {
@@ -22,7 +30,7 @@ window.mutabor = window.mutabor || (function () {
                 selector = null
             }
 
-            var eventHandler = function (event) {
+            this._registerInterceptor('DOMNodeInserted', function (event) {
                 var target = event.srcElement || event.target
                 var container = event.relatedNode
 
@@ -30,12 +38,6 @@ window.mutabor = window.mutabor || (function () {
                     if (callback(target, event) === false)
                         if (container)
                             container.removeChild(target)
-            }
-
-            window.document.addEventListener('DOMNodeInserted', eventHandler)
-            this._filters.push({
-                type: 'DOMNodeInserted',
-                handler: eventHandler
             })
         },
 
@@ -57,10 +59,10 @@ window.mutabor = window.mutabor || (function () {
         },
 
         reset: function () {
-            this._filters.forEach(function (f) {
+            this._interceptors.forEach(function (f) {
                 window.document.removeEventListener(f.type, f.handler)
             })
-            this._filters = []
+            this._interceptors = []
         }
     }
 
