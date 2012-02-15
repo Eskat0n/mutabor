@@ -1,68 +1,82 @@
 window.mutabor = (function () {
-    var _interceptors = [],
-        _registerInterceptor = function (type, handler) {
-            document.addEventListener(type, handler)
-            _interceptors.push({
-                'type': type,
-                'handler': handler
-            })
-        },
-        _is = function (element, selector) {
-            var clone = element.cloneNode(true)
+    var _interceptors = []
 
-            var outerWrapper = document.createElement('div')
-            var innerWrapper = document.createElement('div')
+    var _is = function (element, selector) {
+        var clone = element.cloneNode(true)
 
-            innerWrapper.id = 'temp' + new Date().getTime() + Math.round(Math.random() * 1000)
+        var outerWrapper = document.createElement('div')
+        var innerWrapper = document.createElement('div')
 
-            outerWrapper.appendChild(innerWrapper)
-            innerWrapper.appendChild(clone)
+        innerWrapper.id = 'temp' + new Date().getTime() + Math.round(Math.random() * 1000)
 
-            return !!outerWrapper.querySelector('#' + innerWrapper.id + ' > ' + selector)
+        outerWrapper.appendChild(innerWrapper)
+        innerWrapper.appendChild(clone)
+
+        return !!outerWrapper.querySelector('#' + innerWrapper.id + ' > ' + selector)
+    }
+
+    var _registerInterceptor = function (type, selector, interceptorInvoker) {
+        var eventHandler = function (event) {
+            var target = event.srcElement || event.target
+
+            if (selector) {
+                var childTarget = target.querySelector(selector)
+
+                if (_is(target, selector))
+                    interceptorInvoker(target, event)
+                else if (childTarget)
+                    interceptorInvoker(childTarget, event)
+            }
+            else {
+                interceptorInvoker(target, event)
+            }
         }
 
+        document.addEventListener(type, eventHandler)
+        _interceptors.push({
+            'type': type,
+            'handler': eventHandler
+        })
+    }
+
     return {
-        insert: function (selector, callback) {
-            if (!callback) {
-                callback = selector
+        insert: function (selector, interceptor) {
+            if (!interceptor) {
+                interceptor = selector
                 selector = null
             }
 
-            _registerInterceptor('DOMNodeInserted', function (event) {
-                var target = event.srcElement || event.target
+            _registerInterceptor('DOMNodeInserted', selector, function (target, event) {
                 var container = event.relatedNode
-
-                var applyCallback = function () {
-                    if (callback(target, event) === false)
-                        if (container)
-                            container.removeChild(target)
-                }
-
-                if (selector) {
-                    var childTarget = target.querySelector(selector)
-
-                    if (_is(target, selector)) {
-                        applyCallback()
-                    } else if (childTarget) {
-                        target = childTarget
-                        applyCallback()
-                    }
-                }
-                else {
-                    applyCallback()
-                }
+                if (interceptor(target, event) === false)
+                    if (container)
+                        container.removeChild(target)
             })
         },
 
-        remove: function (selector, callback) {
+        remove: function (selector, interceptor) {
+            if (!interceptor) {
+                interceptor = selector
+                selector = null
+            }
 
+            _registerInterceptor('DOMNodeRemoved', selector, function (target, event) {
+                interceptor(target, event)
+            })
         },
 
-        attribute: function (selector, callback) {
+        attribute: function (selector, interceptor) {
+            if (!interceptor) {
+                interceptor = selector
+                selector = null
+            }
 
+            _registerInterceptor('DOMAttrModified', selector, function (target, event) {
+                interceptor(target, event)
+            })
         },
 
-        text: function (selector, callback) {
+        text: function (selector, interceptor) {
 
         },
 
@@ -79,5 +93,3 @@ window.mutabor = (function () {
         }
     };
 })()
-
-
