@@ -18,6 +18,19 @@ window.mutabor = (function () {
         return !!outerWrapper.querySelector('#' + innerWrapper.id + ' > ' + selector)
     };
 
+    var _methodMix = function (obj1, obj2) {
+        var newObj = {};
+
+        obj1.getOwnPropertyNames().forEach(function (key) {
+            newObj[key] = obj1[key];
+        });
+        obj2.getOwnPropertyNames().forEach(function (key) {
+            newObj[key] = obj2[key];
+        });
+
+        return newObj
+    };
+
     var _registerInterceptor = function (type, selector, interceptorInvoker) {
         var eventHandler = function (event) {
             var target = event.srcElement || event.target;
@@ -39,6 +52,13 @@ window.mutabor = (function () {
         _interceptors.push({
             'type': type,
             'handler': eventHandler
+        });
+
+        return _methodMix(window.mutabor, {
+            now: function () {
+                document.querySelectorAll(selector).forEach(interceptionInvoker);
+                return window.mutabor
+            }
         })
     };
 
@@ -49,7 +69,7 @@ window.mutabor = (function () {
                 selector = null
             }
 
-            _registerInterceptor('DOMNodeInserted', selector, function (target, event) {
+            return _registerInterceptor('DOMNodeInserted', selector, function (target, event) {
                 var container = event.relatedNode;
                 if (interceptor(target, event) === false)
                     if (container)
@@ -63,9 +83,7 @@ window.mutabor = (function () {
                 selector = null
             }
 
-            _registerInterceptor('DOMNodeRemoved', selector, function (target, event) {
-                interceptor(target, event)
-            })
+            return _registerInterceptor('DOMNodeRemoved', selector, interceptor)
         },
 
         attribute: function () {
