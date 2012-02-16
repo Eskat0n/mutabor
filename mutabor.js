@@ -2,6 +2,9 @@ window.mutabor = (function () {
     var _interceptors = []
 
     var _is = function (element, selector) {
+        if (!element.querySelector)
+            return false
+
         var clone = element.cloneNode(true)
 
         var outerWrapper = document.createElement('div')
@@ -20,7 +23,7 @@ window.mutabor = (function () {
             var target = event.srcElement || event.target
 
             if (selector) {
-                var childTarget = target.querySelector(selector)
+                var childTarget = taret.querySelector ? target.querySelector(selector) : null
 
                 if (_is(target, selector))
                     interceptorInvoker(target, event)
