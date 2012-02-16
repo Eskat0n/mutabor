@@ -57,7 +57,7 @@ window.mutabor = (function () {
 
         return _methodMix(window.mutabor, {
             now: function () {
-                document.querySelectorAll(selector).forEach(interceptionInvoker);
+                document.querySelectorAll(selector).forEach(interceptorInvoker);
                 return window.mutabor
             }
         })
