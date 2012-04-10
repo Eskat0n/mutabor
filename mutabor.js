@@ -1,5 +1,6 @@
 window.mutabor = (function () {
-    var _interceptors = [];
+    var _interceptors = [],
+        _eventTypes = ['DOMNodeInserted', 'DOMNodeRemoved', 'DOMAttrModified', 'DOMCharacterDataModified'];
 
     var _is = function (element, selector) {
         if (!element.querySelector)
@@ -63,7 +64,37 @@ window.mutabor = (function () {
         })
     };
 
+    var _detectCapabilities = function () {
+        var caps = {};
+
+        var div = document.createElement('DIV');
+        div.style.display = 'none';
+
+        for (var i = 0; i < _eventTypes.length; i++) {
+            caps[_eventTypes[i]] = false;
+            div.addEventListener(_eventTypes[i], function () {
+                caps[_eventTypes[i]] = true;
+            });
+        }
+
+        var body = document.getElementsByTagName('body')[0];
+        body.appendChild(div);
+        div.setAttribute('mutabor-test', 'mutabor-test');
+        body.removeChild(div);
+
+        return caps;
+    };
+
+    window.addEventListener('load', function () {
+        if (window.mutaborDetectCaps === false ||
+           (window.mutabor && window.mutabor.detectCaps === false))
+            return;
+        window.mutabor.caps = _detectCapabilities();
+    });
+
     return {
+        caps: null,
+
         insert: function (selector, interceptor) {
             if (!interceptor) {
                 interceptor = selector;
