@@ -139,7 +139,7 @@ window.mutabor = (function () {
         },
 
         toString: function () {
-            return 'mutabor version 0.1'
+            return 'mutabor version 0.2'
         }
     };
 })();
