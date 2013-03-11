@@ -1,6 +1,6 @@
 window.mutabor = (function () {
     var _interceptors = [],
-        _eventTypes = ['DOMNodeInserted', 'DOMNodeRemoved', 'DOMAttrModified', 'DOMCharacterDataModified'];
+        _eventTypes = ['DOMSubtreeModified', 'DOMNodeInserted', 'DOMNodeRemoved', 'DOMNodeInsertedIntoDocument', 'DOMNodeRemovedFromDocument''DOMAttrModified', 'DOMCharacterDataModified'];
 
     var _is = function (element, selector) {
         if (!element.querySelector)
