@@ -71,10 +71,12 @@ window.mutabor = (function () {
         div.style.display = 'none';
 
         for (var i = 0; i < _eventTypes.length; i++) {
-            caps[_eventTypes[i]] = false;
-            div.addEventListener(_eventTypes[i], function () {
-                caps[_eventTypes[i]] = true;
-            });
+            (function (eventType) {
+                caps[eventType] = false;
+                div.addEventListener(eventType, function () {
+                    caps[eventType] = true;
+                });
+            })(_eventTypes[i]);
         }
 
         var body = document.getElementsByTagName('body')[0];
