@@ -81,10 +81,9 @@ window.mutabor = (function () {
         var body = document.getElementsByTagName('body')[0];
         body.appendChild(div);
         div.setAttribute('mutabor-test', 'mutabor-test');
-        div.innerHTML = 'mutabor-test';
-        if (div.firstChild && div.firstChild.deleteData) {
-            div.firstChild.deleteData(4, 4); //check for DOMCharacterDataModified
-        }
+        var node = document.createTextNode('mutabor-test');
+        div.appendChild(node);
+        node.data = null;
         body.removeChild(div);
         return caps;
     };
