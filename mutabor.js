@@ -1,6 +1,6 @@
 window.mutabor = (function () {
     var _interceptors = [],
-        _eventTypes = ['DOMNodeInserted', 'DOMNodeRemoved', 'DOMAttrModified', 'DOMCharacterDataModified'];
+        _eventTypes = ['DOMSubtreeModified', 'DOMNodeInserted', 'DOMNodeRemoved', 'DOMNodeInsertedIntoDocument', 'DOMNodeRemovedFromDocument', 'DOMAttrModified', 'DOMCharacterDataModified'];
 
     var _is = function (element, selector) {
         if (!element.querySelector)
@@ -71,19 +71,20 @@ window.mutabor = (function () {
         div.style.display = 'none';
 
         for (var i = 0; i < _eventTypes.length; i++) {
-            (function (eventType) {
-                caps[eventType] = false;
-                div.addEventListener(eventType, function () {
-                    caps[eventType] = true;
-                });
-            })(_eventTypes[i]);
+            var eventType = _eventTypes[i];
+            caps[eventType] = false;
+            div.addEventListener(eventType, function (evt) {
+                caps[evt.type] = true;
+            });
         }
 
         var body = document.getElementsByTagName('body')[0];
         body.appendChild(div);
         div.setAttribute('mutabor-test', 'mutabor-test');
+        var node = document.createTextNode('mutabor-test');
+        div.appendChild(node);
+        node.data = null;
         body.removeChild(div);
-
         return caps;
     };
 
